@@ -1,0 +1,49 @@
+{
+	"name": "envautoexample",
+	"displayName": "EnvAutoExample",
+	"description": "EnvExample Generator is a Visual Studio Code extension designed to automate the creation and updating of .env.example files by analyzing existing .env files within your projects. The extension intelligently scans the .env file, masks sensitive information, and generates a corresponding .env.example with placeholders, making it easy to share the required environment variables structure while keeping the actual values secure. EnvExample Generator streamlines the maintenance of .env.example files and minimizes manual intervention, ensuring your example configuration stays updated and consistent with your project's .env.",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.79.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [	],
+	"main": "./dist/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "EnvAutoExample.generate",
+				"title": "Generate .env.example From .env"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run package",
+		"compile": "webpack",
+		"watch": "webpack --watch",
+		"package": "webpack --mode production --devtool hidden-source-map",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "npm run compile-tests && npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.79.0",
+		"@types/glob": "^8.1.0",
+		"@types/mocha": "^10.0.1",
+		"@types/node": "20.2.5",
+		"@typescript-eslint/eslint-plugin": "^5.59.8",
+		"@typescript-eslint/parser": "^5.59.8",
+		"eslint": "^8.41.0",
+		"glob": "^8.1.0",
+		"mocha": "^10.2.0",
+		"typescript": "^5.1.3",
+		"ts-loader": "^9.4.3",
+		"webpack": "^5.85.0",
+		"webpack-cli": "^5.1.1",
+		"@vscode/test-electron": "^2.3.2"
+	}
+}
