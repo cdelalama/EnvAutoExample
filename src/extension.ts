@@ -34,6 +34,22 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		}
 	});
+	if (vscode.workspace.workspaceFolders) {
+		const watcher = vscode.workspace.createFileSystemWatcher("**/.env");
+		watcher.onDidChange(async (uri) => {
+			const envFilePath = uri.fsPath;
+			const exampleFilePath = path.join(
+				path.dirname(envFilePath),
+				".env.example"
+			);
+
+			if (fs.existsSync(envFilePath)) {
+				generateEnvExample(envFilePath, exampleFilePath);
+				vscode.window.showInformationMessage("Updated .env.example");
+			}
+		});
+		context.subscriptions.push(watcher);
+	}
 }
 
 function generateEnvExample(envFilePath: string, outputFilePath: string): void {
