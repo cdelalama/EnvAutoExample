@@ -2,8 +2,9 @@
 	"name": "envautoexample",
 	"displayName": "EnvAutoExample",
 	"description": "EnvExample Generator is a Visual Studio Code extension designed to automate the creation and updating of .env.example files by analyzing existing .env files within your projects. The extension intelligently scans the .env file, masks sensitive information, and generates a corresponding .env.example with placeholders, making it easy to share the required environment variables structure while keeping the actual values secure. EnvExample Generator streamlines the maintenance of .env.example files and minimizes manual intervention, ensuring your example configuration stays updated and consistent with your project's .env.",
-	"version": "1.1.0",
+	"version": "1.1.2",
 	"publisher": "MamaCarlos",
+	"icon": "assets/env_env_example.jpg",
 	"engines": {
 		"vscode": "^1.79.0"
 	},
