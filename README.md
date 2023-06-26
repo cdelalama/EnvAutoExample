@@ -1,5 +1,5 @@
 # EnvAutoExample Extension
-![Image Alt Text](https://raw.githubusercontent.com/cdelalama/EnvAutoExample/main/assets/env_env_example.jpg)
+![Image Alt Text](assets/envAutoExample.gif)
 Automate `.env.example` file generation by scanning existing `.env` files in projects, masking sensitive information, and creating corresponding `.env.example` files with placeholders. This efficiently maintains up-to-date example configurations while keeping actual values secure.
 
 ## Key Features
