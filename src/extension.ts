@@ -70,17 +70,30 @@ export function activate(context: vscode.ExtensionContext) {
 
 			let outputData = "";
 			for (const line of lines) {
-				const [key, value] = line.trim().split("=", 2);
-				if (value !== undefined) {
-					let newValue = `your-${key.toLowerCase()}`;
-					// Add quotes if original value had quotes.
-					if (value.startsWith("\"") && value.endsWith("\"")) {
-						newValue = `"${newValue}"`;
-					}
-					outputData += `${key}=${newValue}\n`;
-				} else {
+				// Trim and split each line at the equals sign.
+				let [key, remaining] = line.trim().split("=", 2);
+
+				// If there's no remaining part, just output the line as is.
+				if (remaining === undefined) {
 					outputData += line + "\n";
+					continue;
 				}
+
+				// If there's a # in the line, split again at the # to separate the value and the comment.
+				let value = remaining;
+				let comment = "";
+				if (remaining.includes("#")) {
+					[value, comment] = remaining.split("#", 2);
+					comment = ` #${comment}`;  // add space and # back to the start of comment
+				}
+
+				// Proceed as before, but append the comment to the output if it exists.
+				let newValue = `your-${key.toLowerCase()}`;
+				if (value.trim().startsWith("\"") && value.trim().endsWith("\"")) {
+					newValue = `"${newValue}"`;
+				}
+
+				outputData += `${key}=${newValue.trim()}${comment}\n`;
 			}
 
 			fs.writeFileSync(outputFilePath, outputData);
@@ -92,4 +105,6 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		}
 	}
+
+
 }
