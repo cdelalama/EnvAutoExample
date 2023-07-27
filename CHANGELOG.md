@@ -7,3 +7,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 
 - Initial release
+
+## 1.3.0 - 2023-07-27
+### Added
+- Enhanced the `.env.example` file generation to preserve comments from the original `.env` file. Now, comments following a `#` symbol on the same line as a variable assignment will be included in the generated `.env.example` file. This helps maintain important contextual information while still masking actual values.
