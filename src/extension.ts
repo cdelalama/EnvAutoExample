@@ -6,88 +6,59 @@ export function activate(context: vscode.ExtensionContext) {
 	try {
 		context.subscriptions.push(
 			vscode.commands.registerCommand("EnvAutoExample.generate", () => {
-				const envFile = vscode.workspace
+				vscode.workspace
 					.findFiles("**/*.env*")
-					.then((files) => {
+					.then((files) =>
 						files.forEach((file) => {
 							if (!file.fsPath.endsWith(".example")) {
-								const envFilePath = file.fsPath;
-								const exampleFilePath = envFilePath + ".example";
-								if (ignoreFile(envFilePath)) {
-									if (fs.existsSync(exampleFilePath)) {
-										fs.unlinkSync(exampleFilePath);
-										vscode.window.showInformationMessage(
-											".env.example file removed"
-										);
-									}
-								} else {
-									generateEnvExample(envFilePath, exampleFilePath);
-								}
+								processEnvFile(file.fsPath);
 							}
-						});
-						vscode.window.showInformationMessage(
-							"Generated .env.example files"
-						);
-					});
+						})
+					)
+					.then(() =>
+						vscode.window.showInformationMessage("Generated .env.example files")
+					);
 			})
 		);
 
-		vscode.workspace.onDidSaveTextDocument(async (document) => {
+		vscode.workspace.onDidSaveTextDocument((document) => {
 			if (
 				path.basename(document.fileName).startsWith(".env") &&
 				!document.fileName.endsWith(".example")
 			) {
-				const envFilePath = document.fileName;
-				const exampleFilePath = envFilePath + ".example";
-
-				if (fs.existsSync(envFilePath)) {
-					if (ignoreFile(envFilePath)) {
-						if (fs.existsSync(exampleFilePath)) {
-							fs.unlinkSync(exampleFilePath);
-							vscode.window.showInformationMessage(".env.example file removed");
-						}
-					} else {
-						generateEnvExample(envFilePath, exampleFilePath);
-						vscode.window.showInformationMessage("Updated .env.example");
-					}
-				}
+				processEnvFile(document.fileName);
 			}
 		});
 
 		if (vscode.workspace.workspaceFolders) {
 			const watcher = vscode.workspace.createFileSystemWatcher("**/*.env*");
 			watcher.onDidChange((uri) => {
-				if (!uri) {
-					console.error("Undefined file change event");
-					return;
-				}
-				if (!uri.fsPath.endsWith(".example")) {
-					const envFilePath = uri.fsPath;
-					const exampleFilePath = envFilePath + ".example";
-
-					if (fs.existsSync(envFilePath)) {
-						if (ignoreFile(envFilePath)) {
-							if (fs.existsSync(exampleFilePath)) {
-								fs.unlinkSync(exampleFilePath);
-								vscode.window.showInformationMessage(
-									".env.example file removed"
-								);
-							}
-						} else {
-							generateEnvExample(envFilePath, exampleFilePath);
-							vscode.window.showInformationMessage("Updated .env.example");
-						}
-					}
+				if (uri && !uri.fsPath.endsWith(".example")) {
+					processEnvFile(uri.fsPath);
 				}
 			});
 			context.subscriptions.push(watcher);
 		}
 	} catch (err) {
-		if (err instanceof Error) {
-			vscode.window.showErrorMessage(`Error: ${err.message}`);
-		} else {
-			vscode.window.showErrorMessage("An unknown error occurred");
+		vscode.window.showErrorMessage(
+			err instanceof Error
+				? `Error: ${err.message}`
+				: "An unknown error occurred"
+		);
+	}
+}
+
+async function processEnvFile(envFilePath: string) {
+	const exampleFilePath = envFilePath + ".example";
+	if (ignoreFile(envFilePath)) {
+		if (fs.existsSync(exampleFilePath)) {
+			fs.unlinkSync(exampleFilePath);
+			vscode.window.showInformationMessage(".env.example file removed");
 		}
+		return;
+	} else {
+		await generateEnvExample(envFilePath, exampleFilePath);
+		vscode.window.showInformationMessage("Updated .env.example");
 	}
 }
 
