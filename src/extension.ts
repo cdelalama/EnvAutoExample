@@ -13,7 +13,14 @@ export function activate(context: vscode.ExtensionContext) {
 							if (!file.fsPath.endsWith(".example")) {
 								const envFilePath = file.fsPath;
 								const exampleFilePath = envFilePath + ".example";
-								if (!ignoreFile(envFilePath)) {
+								if (ignoreFile(envFilePath)) {
+									if (fs.existsSync(exampleFilePath)) {
+										fs.unlinkSync(exampleFilePath);
+										vscode.window.showInformationMessage(
+											".env.example file removed"
+										);
+									}
+								} else {
 									generateEnvExample(envFilePath, exampleFilePath);
 								}
 							}
@@ -33,9 +40,16 @@ export function activate(context: vscode.ExtensionContext) {
 				const envFilePath = document.fileName;
 				const exampleFilePath = envFilePath + ".example";
 
-				if (fs.existsSync(envFilePath) && !ignoreFile(envFilePath)) {
-					generateEnvExample(envFilePath, exampleFilePath);
-					vscode.window.showInformationMessage("Updated .env.example");
+				if (fs.existsSync(envFilePath)) {
+					if (ignoreFile(envFilePath)) {
+						if (fs.existsSync(exampleFilePath)) {
+							fs.unlinkSync(exampleFilePath);
+							vscode.window.showInformationMessage(".env.example file removed");
+						}
+					} else {
+						generateEnvExample(envFilePath, exampleFilePath);
+						vscode.window.showInformationMessage("Updated .env.example");
+					}
 				}
 			}
 		});
@@ -47,9 +61,18 @@ export function activate(context: vscode.ExtensionContext) {
 					const envFilePath = uri.fsPath;
 					const exampleFilePath = envFilePath + ".example";
 
-					if (fs.existsSync(envFilePath) && !ignoreFile(envFilePath)) {
-						generateEnvExample(envFilePath, exampleFilePath);
-						vscode.window.showInformationMessage("Updated .env.example");
+					if (fs.existsSync(envFilePath)) {
+						if (ignoreFile(envFilePath)) {
+							if (fs.existsSync(exampleFilePath)) {
+								fs.unlinkSync(exampleFilePath);
+								vscode.window.showInformationMessage(
+									".env.example file removed"
+								);
+							}
+						} else {
+							generateEnvExample(envFilePath, exampleFilePath);
+							vscode.window.showInformationMessage("Updated .env.example");
+						}
 					}
 				}
 			});
@@ -73,6 +96,10 @@ function ignoreFile(envFilePath: string): boolean {
 
 function generateEnvExample(envFilePath: string, outputFilePath: string): void {
 	if (ignoreFile(envFilePath)) {
+		if (fs.existsSync(outputFilePath)) {
+			fs.unlinkSync(outputFilePath);
+			vscode.window.showInformationMessage(".env.example file removed");
+		}
 		return;
 	}
 	try {
@@ -113,6 +140,7 @@ function generateEnvExample(envFilePath: string, outputFilePath: string): void {
 		}
 
 		fs.writeFileSync(outputFilePath, outputData);
+		vscode.window.showInformationMessage("Updated .env.example");
 	} catch (err) {
 		if (err instanceof Error) {
 			console.error(`Failed to generate .env.example: ${err.message}`);
