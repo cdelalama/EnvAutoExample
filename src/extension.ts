@@ -57,6 +57,10 @@ export function activate(context: vscode.ExtensionContext) {
 		if (vscode.workspace.workspaceFolders) {
 			const watcher = vscode.workspace.createFileSystemWatcher("**/*.env*");
 			watcher.onDidChange((uri) => {
+				if (!uri) {
+					console.error("Undefined file change event");
+					return;
+				}
 				if (!uri.fsPath.endsWith(".example")) {
 					const envFilePath = uri.fsPath;
 					const exampleFilePath = envFilePath + ".example";
@@ -94,7 +98,14 @@ function ignoreFile(envFilePath: string): boolean {
 	return firstLine.trim().toLowerCase() === "#noexample";
 }
 
-function generateEnvExample(envFilePath: string, outputFilePath: string): void {
+function delay(ms: number) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function generateEnvExample(
+	envFilePath: string,
+	outputFilePath: string
+): Promise<void> {
 	if (ignoreFile(envFilePath)) {
 		if (fs.existsSync(outputFilePath)) {
 			fs.unlinkSync(outputFilePath);
@@ -106,6 +117,7 @@ function generateEnvExample(envFilePath: string, outputFilePath: string): void {
 		if (!fs.existsSync(envFilePath)) {
 			throw new Error(`File not found: ${envFilePath}`);
 		}
+		await delay(500); // wait for 100ms
 
 		const envData = fs.readFileSync(envFilePath, { encoding: "utf-8" });
 		const lines = envData.split("\n");
