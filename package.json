@@ -2,7 +2,7 @@
 	"name": "envautoexample",
 	"displayName": "DotENV Auto-Example",
 	"description": "Automate `.env.example` file generation from `.env` file",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"publisher": "MamaCarlos",
 	"icon": "assets/env_env_example.jpg",
 	"engines": {
