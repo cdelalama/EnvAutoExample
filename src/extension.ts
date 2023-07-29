@@ -84,44 +84,16 @@ async function generateEnvExample(
 		}
 		return;
 	}
+
 	try {
 		if (!fs.existsSync(envFilePath)) {
 			throw new Error(`File not found: ${envFilePath}`);
 		}
-		await delay(500); // wait for 100ms
 
+		await delay(500); // wait for 100ms
 		const envData = fs.readFileSync(envFilePath, { encoding: "utf-8" });
 		const lines = envData.split("\n");
-
-		let outputData = "";
-		for (const line of lines) {
-			// Trim and split each line at the equals sign.
-			let [key, remaining] = line.trim().split("=", 2);
-
-			// If there's no remaining part, just output the line as is.
-			if (remaining === undefined) {
-				outputData += line + "\n";
-				continue;
-			}
-
-			// If there's a # in the line, split again at the # to separate the value and the comment.
-			let value = remaining;
-			let comment = "";
-			if (remaining.includes("#")) {
-				[value, comment] = remaining.split("#", 2);
-				comment = ` #${comment}`; // add space and # back to the start of comment
-			}
-
-			// Proceed as before, but append the comment to the output if it exists.
-			let newKey = key.split(".")[0];
-			let newValue = `your-${newKey.toLowerCase()}`;
-			if (value.trim().startsWith('"') && value.trim().endsWith('"')) {
-				newValue = `"${newValue}"`;
-			}
-
-			outputData += `${key}=${newValue.trim()}${comment}\n`;
-		}
-
+		let outputData = lines.map(processLine).join("\n");
 		fs.writeFileSync(outputFilePath, outputData);
 		vscode.window.showInformationMessage("Updated .env.example");
 	} catch (err) {
@@ -131,4 +103,31 @@ async function generateEnvExample(
 			console.error(`An unknown error occurred`);
 		}
 	}
+}
+
+function processLine(line: string): string {
+	// Trim and split each line at the equals sign.
+	let [key, remaining] = line.trim().split("=", 2);
+
+	// If there's no remaining part, just return the line as is.
+	if (remaining === undefined) {
+		return line;
+	}
+
+	// If there's a # in the line, split again at the # to separate the value and the comment.
+	let value = remaining;
+	let comment = "";
+	if (remaining.includes("#")) {
+		[value, comment] = remaining.split("#", 2);
+		comment = ` #${comment}`; // add space and # back to the start of comment
+	}
+
+	// Proceed as before, but append the comment to the output if it exists.
+	let newKey = key.split(".")[0];
+	let newValue = `your-${newKey.toLowerCase()}`;
+	if (value.trim().startsWith('"') && value.trim().endsWith('"')) {
+		newValue = `"${newValue}"`;
+	}
+
+	return `${key}=${newValue.trim()}${comment}`;
 }
