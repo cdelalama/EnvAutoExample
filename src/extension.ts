@@ -55,7 +55,6 @@ async function processEnvFile(envFilePath: string) {
 			fs.unlinkSync(exampleFilePath);
 			vscode.window.showInformationMessage(".env.example file removed");
 		}
-		return;
 	} else {
 		await generateEnvExample(envFilePath, exampleFilePath);
 		vscode.window.showInformationMessage("Updated .env.example");
@@ -63,10 +62,18 @@ async function processEnvFile(envFilePath: string) {
 }
 
 function ignoreFile(envFilePath: string): boolean {
+	const useExampleFlag = vscode.workspace
+		.getConfiguration("EnvAutoExample")
+		.get("useExampleFlag");
 	const firstLine = fs
 		.readFileSync(envFilePath, { encoding: "utf-8" })
-		.split("\n")[0];
-	return firstLine.trim().toLowerCase() === "#noexample";
+		.split("\n")[0]
+		.trim()
+		.toLowerCase();
+
+	// If useExampleFlag is true, ignore the file if it does not have the #example flag.
+	// If useExampleFlag is false, ignore the file if it has the #noexample flag.
+	return useExampleFlag ? firstLine !== "#example" : firstLine === "#noexample";
 }
 
 function delay(ms: number) {

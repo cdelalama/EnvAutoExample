@@ -25,7 +25,18 @@
 				"command": "EnvAutoExample.generate",
 				"title": "Generate .env.example From .env"
 			}
-		]
+		],
+		"configuration": {
+			"type": "object",
+			"title": "EnvAutoExample",
+			"properties": {
+				"EnvAutoExample.useExampleFlag": {
+					"type": "boolean",
+					"default": false,
+					"description": "If selected, only .env files with a '#example' flag in the first line will be processed to generate .env.example files. \n If not selected,all .env files will be processed to generate .env.example files, unless they contain a '#noexample' flag in the first line. By default, this option is not selected. "
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",
