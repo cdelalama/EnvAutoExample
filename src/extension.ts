@@ -64,7 +64,7 @@ async function processEnvFile(envFilePath: string) {
 function ignoreFile(envFilePath: string): boolean {
 	const useExampleFlag = vscode.workspace
 		.getConfiguration("EnvAutoExample")
-		.get("useExampleFlag");
+		.get("Only Generate From Marked Files");
 	const firstLine = fs
 		.readFileSync(envFilePath, { encoding: "utf-8" })
 		.split("\n")[0]
