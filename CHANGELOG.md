@@ -23,3 +23,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## 2.2.0 - 2023-07-31
 ### Added
 - Introduced an optional flag-based functionality for selective `.env.example` file generation. With the introduction of a new setting, the extension now provides the option to process only `.env` files marked with the `#example` flag for the generation of corresponding `.env.example` files. This setting can be toggled on and off based on user preference. When enabled, only `.env` files with the `#example` flag will be processed, while when disabled, the extension will generate `.env.example` files for all `.env` files except those marked with the `#noexample` flag.
+
+## 2.2.1 - 2023-07-31
+### Fixed
+- Fixed a bug where the settings flag "Only Generate From Marked Files" was not being correctly read from the configuration. The bug resulted in `.env.example` files being generated from all `.env` files irrespective of the presence of the `#example` or `#noexample` flags. This fix ensures that the extension's behavior accurately reflects the selected configuration.
+
+### Changed
+- Refactored the codebase to improve modularity and readability. The `extension.ts` file now only contains the activation logic. A new `fileProcessor.ts` file was created to handle `.env` file processing, including generation and updating of `.env.example` files. Utility functions were moved to a separate `utils.ts` file for better organization and readability. This change enhances the maintainability of the codebase, making it easier to add features or resolve bugs in the future.
