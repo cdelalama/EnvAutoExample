@@ -19,3 +19,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## 2.1.0 - 2023-07-28
 ### Added
 - Added the ability to exclude specific `.env` files from being processed. By adding a `#noexample` flag to the first line of a `.env` file, the extension will ignore this file when generating the `.env.example` files. This provides users with more control and flexibility when working with various `.env` files.
+
+## 2.2.0 - 2023-07-31
+### Added
+- Introduced an optional flag-based functionality for selective `.env.example` file generation. With the introduction of a new setting, the extension now provides the option to process only `.env` files marked with the `#example` flag for the generation of corresponding `.env.example` files. This setting can be toggled on and off based on user preference. When enabled, only `.env` files with the `#example` flag will be processed, while when disabled, the extension will generate `.env.example` files for all `.env` files except those marked with the `#noexample` flag.

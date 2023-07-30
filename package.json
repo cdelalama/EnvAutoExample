@@ -2,7 +2,7 @@
 	"name": "envautoexample",
 	"displayName": "DotENV Auto-Example",
 	"description": "Automate `.env.example` file generation from `.env` file",
-	"version": "2.1.0",
+	"version": "2.2.0",
 	"publisher": "MamaCarlos",
 	"icon": "assets/env_env_example.jpg",
 	"engines": {
@@ -30,7 +30,7 @@
 			"type": "object",
 			"title": "EnvAutoExample",
 			"properties": {
-				"EnvAutoExample.useExampleFlag": {
+				"EnvAutoExample.Only Generate From Marked Files": {
 					"type": "boolean",
 					"default": false,
 					"description": "If selected, only .env files with a '#example' flag in the first line will be processed to generate .env.example files. \n If not selected,all .env files will be processed to generate .env.example files, unless they contain a '#noexample' flag in the first line. By default, this option is not selected. "
